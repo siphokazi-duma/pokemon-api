@@ -23,6 +23,11 @@ public interface PokeapiServiceClient {
                                         @RequestHeader("Accept") String accept,
                                         @RequestHeader("user-agent") String userAgent,
                                         @PathVariable(name = "name") String name);
+    @GetMapping("/{details}")
+    Pokemon getPokemonDetails(@RequestHeader("Content-Type") String contentType,
+                             @RequestHeader("Accept") String accept,
+                             @RequestHeader("user-agent") String userAgent,
+                             @PathVariable(name = "details") String name);
 
     @GetMapping("/ability/{id}")
     PokemonAbility getPokemonAbilityById(@RequestHeader("Content-Type") String contentType,

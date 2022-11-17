@@ -2,100 +2,50 @@ package com.services.pokemonapi.business.impl;
 
 import com.services.pokemonapi.business.PokemonService;
 import com.services.pokemonapi.endpoint.client.PokeapiServiceClient;
+import com.services.pokemonapi.endpoint.dto.NamedApiResource;
 import com.services.pokemonapi.endpoint.dto.NamedApiResourceList;
 import com.services.pokemonapi.endpoint.dto.pokemon.Pokemon;
+import com.services.pokemonapi.exception.PokemonServiceException;
+import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PokemonServiceImpl implements PokemonService {
     public static final String APPLICATION_JSON = "application/json";
     public static final String APPLICATION = "Application";
-    public static final String ABILITY = "ability";
-    public static final String CHARACTERISTICS = "characteristics";
-    public static final String EGG_GROUP = "egg-group";
-    public static final String GENDER = "gender";
-    public static final String GROWTH_RATE = "growth-rate";
-    public static final String NATURE = "nature";
-    public static final String POKEATHLON_STATS = "pokeathlon-stats";
-    public static final String LOCATION_AREAS = "location-areas";
-    public static final String COLORS = "colors";
-    public static final String FORM = "form";
-    public static final String HABITATS = "habitats";
-    public static final String SHAPES = "shapes";
-    public static final String SPECIES = "species";
-    public static final String STATS = "stats";
-    public static final String TYPES = "types";
+    public static final String NO_CONTENT = "NO CONTENT";
+    public static final String NOT_FOUND = "NOT FOUND";
+
     private final Logger logger = LoggerFactory.getLogger(PokemonServiceImpl.class);
     private final PokeapiServiceClient pokeapiServiceClient;
 
     public PokemonServiceImpl(PokeapiServiceClient pokeapiServiceClient) {
         this.pokeapiServiceClient = pokeapiServiceClient;
     }
-    //Check for null
-    //No results found
-    //Create
     @Override
-    public NamedApiResourceList<Pokemon> getAllPokemons() {
+    public List<String> getAllPokemons() {
         try{
-            return pokeapiServiceClient.getAllPokemons(APPLICATION_JSON, APPLICATION_JSON,APPLICATION);
+            NamedApiResourceList<Pokemon> apiResourceList = pokeapiServiceClient.getAllPokemons(APPLICATION_JSON, APPLICATION_JSON,APPLICATION);
+            return apiResourceList.getResults().stream().map(NamedApiResource::getName).collect(Collectors.toList());
         }catch(Exception exception){
-            logger.error("Failure: "+exception.getMessage());
+            throw new PokemonServiceException(NO_CONTENT,HttpStatus.NO_CONTENT);
         }
-        return null;
     }
 
     @Override
     public Pokemon getPokemonByName(String name) {
-        try{
-            return pokeapiServiceClient.getPokemonByName(APPLICATION_JSON, APPLICATION_JSON,APPLICATION,name.toLowerCase());
-        }catch (Exception exception){
-            logger.error("Failure: "+exception.getMessage());
-        }
-        return null;
+       Pokemon pokemon = pokeapiServiceClient.getPokemonByName(APPLICATION_JSON, APPLICATION_JSON, APPLICATION, name.toLowerCase().trim());
+       if(pokemon == null){
+           throw new PokemonServiceException(NOT_FOUND,HttpStatus.NOT_FOUND);
+       }else{
+           return pokemon;
+       }
     }
 
-    @Override
-    public Object getPokemonDetailsByName(String name, String details) {
-        try{
-            Pokemon pokemon = pokeapiServiceClient.getPokemonByName(APPLICATION_JSON, APPLICATION_JSON,APPLICATION,name.toLowerCase());
-
-            switch (details.toLowerCase()){
-                case ABILITY:
-                    //return pokeapiServiceClient.getPokemonAbilityById(pokemon.get);
-                case CHARACTERISTICS:
-                    return pokeapiServiceClient.getPokemonCharacteristicByName(APPLICATION_JSON, APPLICATION_JSON,APPLICATION,pokemon.getName());
-                case EGG_GROUP:
-                    return pokeapiServiceClient.getPokemonEggGroupById(APPLICATION_JSON, APPLICATION_JSON,APPLICATION,pokemon.getName());
-                case GENDER:
-                    return pokeapiServiceClient.getPokemonGenderById(APPLICATION_JSON, APPLICATION_JSON,APPLICATION,pokemon.getName());
-                case GROWTH_RATE:
-                    return pokeapiServiceClient.getPokemonGrowthRateById(APPLICATION_JSON, APPLICATION_JSON,APPLICATION,pokemon.getName());
-                case NATURE:
-                    return pokeapiServiceClient.getPokemonNaturesById(APPLICATION_JSON, APPLICATION_JSON,APPLICATION,pokemon.getName());
-                case POKEATHLON_STATS:
-                    return pokeapiServiceClient.getPokemonPokeAthlonStatsById(APPLICATION_JSON, APPLICATION_JSON,APPLICATION,pokemon.getName());
-                case LOCATION_AREAS:
-                    return pokeapiServiceClient.getPokemonLocationAreasByName(APPLICATION_JSON, APPLICATION_JSON,APPLICATION,pokemon.getName());
-                case COLORS:
-                    return pokeapiServiceClient.getPokemonColorsById(APPLICATION_JSON, APPLICATION_JSON,APPLICATION,pokemon.getName());
-                case FORM:
-                    return pokeapiServiceClient.getPokemonFormsById(APPLICATION_JSON, APPLICATION_JSON,APPLICATION,pokemon.getName());
-                case HABITATS:
-                    return pokeapiServiceClient.getPokemonHabitatsById(APPLICATION_JSON, APPLICATION_JSON,APPLICATION,pokemon.getName());
-                case SHAPES:
-                    return pokeapiServiceClient.getPokemonShapesById(APPLICATION_JSON, APPLICATION_JSON,APPLICATION,pokemon.getName());
-                case SPECIES:
-                    return pokeapiServiceClient.getPokemonSpeciesById(APPLICATION_JSON, APPLICATION_JSON,APPLICATION,pokemon.getName());
-                case STATS:
-                    return pokeapiServiceClient.getPokemonStatsById(APPLICATION_JSON, APPLICATION_JSON,APPLICATION,pokemon.getName());
-                case TYPES:
-                    return pokeapiServiceClient.getPokemonTypesById(APPLICATION_JSON, APPLICATION_JSON,APPLICATION,pokemon.getName());
-            }
-        }catch(Exception exception){
-            logger.error("Failure: "+exception.getMessage());
-        }
-        return null;
-    }
 }
