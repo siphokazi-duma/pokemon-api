@@ -2,7 +2,6 @@ package com.services.pokemonapi.exception;
 
 import com.services.pokemonapi.dto.ErrorResponse;
 import feign.FeignException;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

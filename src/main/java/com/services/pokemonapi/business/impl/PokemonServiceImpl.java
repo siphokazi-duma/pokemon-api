@@ -22,7 +22,6 @@ public class PokemonServiceImpl implements PokemonService {
     public static final String NO_CONTENT = "NO CONTENT";
     public static final String NOT_FOUND = "NOT FOUND";
 
-    private final Logger logger = LoggerFactory.getLogger(PokemonServiceImpl.class);
     private final PokeapiServiceClient pokeapiServiceClient;
 
     public PokemonServiceImpl(PokeapiServiceClient pokeapiServiceClient) {

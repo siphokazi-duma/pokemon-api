@@ -11,6 +11,7 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 import javax.net.ssl.SSLContext;
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -26,7 +27,7 @@ public class SecurityConfig {
             CertificateException, MalformedURLException, IOException {
 
         SSLContext sslContext = new SSLContextBuilder()
-                .loadTrustMaterial(new URL("file:src/main/resources/keystore/pokemon.p12"), "Pokemon".toCharArray()).build();
+                .loadTrustMaterial(Thread.currentThread().getContextClassLoader().getResource("keystore/pokemon.p12"), "Pokemon".toCharArray()).build();
         SSLConnectionSocketFactory sslConFactory = new SSLConnectionSocketFactory(sslContext);
 
         CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(sslConFactory).build();
