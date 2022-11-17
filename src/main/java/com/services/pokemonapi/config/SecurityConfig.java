@@ -20,7 +20,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 
 @Configuration
-public class SecurityConfig  {
+public class SecurityConfig {
     @Bean
     public RestTemplate restTemplate() throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException,
             CertificateException, MalformedURLException, IOException {

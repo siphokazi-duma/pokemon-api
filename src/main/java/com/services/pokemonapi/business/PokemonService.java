@@ -1,13 +1,12 @@
 package com.services.pokemonapi.business;
 
-import com.services.pokemonapi.endpoint.dto.NamedApiResourceList;
 import com.services.pokemonapi.endpoint.dto.pokemon.Pokemon;
+
+import java.util.List;
 
 
 public interface PokemonService {
-    NamedApiResourceList<Pokemon> getAllPokemons();
+    List<String> getAllPokemons();
 
     Pokemon getPokemonByName(String name);
-
-    Object getPokemonDetailsByName(String name, String details);
 }
